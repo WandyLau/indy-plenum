@@ -8,6 +8,7 @@ OUTPUT_PATH=${1:-.}
 function build_rocksdb_deb {
     VERSION=$1
     VERSION_TAG="rocksdb-$VERSION"
+    arch=$(dpkg --print-architecture)
 
     git clone https://github.com/evernym/rocksdb.git /tmp/rocksdb
     cd /tmp/rocksdb
@@ -15,7 +16,7 @@ function build_rocksdb_deb {
     sed -i 's/-m rocksdb@fb.com/-m "Hyperledger <hyperledger-indy@lists.hyperledger.org>"/g' \
         ./build_tools/make_package.sh
     EXTRA_CFLAGS="-fPIC" EXTRA_CXXFLAGS="-fPIC" ./build_tools/make_package.sh $VERSION
-    cp ./package/rocksdb_${VERSION}_amd64.deb $OUTPUT_PATH
+    cp ./package/rocksdb_${VERSION}_$arch.deb $OUTPUT_PATH
     # Install it in the system as it is needed by python-rocksdb.
     make install
     cd -
